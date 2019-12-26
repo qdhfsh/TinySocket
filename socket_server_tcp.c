@@ -50,15 +50,16 @@ int main(){
 	} else {
 		printf("Accpet success!\n");
 		send(new_fd, "Hello Socket", sizeof("Hello Socket"), 0);
-		while(1){
-			iRecvLen = recv(new_fd, buf, sizeof(buf), 0);
-			if(iRecvLen > 0){
-				printf("buf: %s\n", buf);
-				iRecvLen = 0;
-			} else {
-				printf("Recieve failure or closed connection!\n");
-				exit(-1);
-			}
+	}
+
+	while(1){
+		iRecvLen = recv(new_fd, buf, sizeof(buf), 0);
+		if(iRecvLen > 0){
+			printf("buf: %s\n", buf);
+			iRecvLen = 0;
+		} else {
+			printf("Recieve failure or closed connection!\n");
+			exit(-1);
 		}
 	}
 

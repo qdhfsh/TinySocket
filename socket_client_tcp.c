@@ -37,6 +37,14 @@ int main(){
 		printf("Welcome:%s\n", buf);
 	}
 
+	while(1){
+		scanf("%s", &buf);
+		if(strcmp(buf, "quit") == 0){
+			exit(0);
+		}
+		send(iSocketFD, (void *)&buf, sizeof(buf), 0);
+	}
+
 	close(iSocketFD);
 	return 0;
 }

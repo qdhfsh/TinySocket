@@ -10,12 +10,20 @@
 #define PORT 2345
 #define ADDR "47.101.207.44"
 
-int main(){
-	int iSocketFD = 0;
-	unsigned int iRemoteAddr = 0;
-	struct sockaddr_in stRemoteAddr = {0};
-	socklen_t socklen = 0;
-	char buf[4096] = {0};
+struct MessageData
+{
+	int id;
+	char message[4096];
+};
+
+int iSocketFD = 0;
+unsigned int iRemoteAddr = 0;
+struct sockaddr_in stRemoteAddr = {0};
+socklen_t socklen = 0;
+char buf[4096] = {0};
+struct MessageData recv_message_data;
+
+void socket_client_init(){
 
 	iSocketFD = socket(AF_INET, SOCK_STREAM, 0);
 	if(iSocketFD < 0){
@@ -28,17 +36,33 @@ int main(){
 	inet_pton(AF_INET, ADDR, &iRemoteAddr);
 	stRemoteAddr.sin_addr.s_addr = iRemoteAddr;
 
+	return ;
+}
+
+void socket_client_connect(){
+
 	if(connect(iSocketFD, (void *)&stRemoteAddr, sizeof(stRemoteAddr)) < 0){
 		perror("Connect failure!\n");
 		exit(-1);
 	} else {
 		printf("Connect success!\n");
 		recv(iSocketFD, buf, sizeof(buf), 0);
-		printf("Welcome:%s\n", buf);
+		printf("bufsize=%d\n", sizeof(buf));
+		memcpy(&recv_message_data, buf, sizeof(buf));
+		printf("id=%d message=%s\n", recv_message_data.id, recv_message_data.message);
 	}
 
+	return ;
+}
+
+int main(){
+
+	socket_client_init();
+
+	socket_client_connect();
+
 	while(1){
-		scanf("%s", &buf);
+		fgets(buf, sizeof(buf), stdin);
 		if(strcmp(buf, "quit") == 0){
 			exit(0);
 		}
@@ -46,5 +70,8 @@ int main(){
 	}
 
 	close(iSocketFD);
+	printf("Connection closed!\n");
+
 	return 0;
 }
+
